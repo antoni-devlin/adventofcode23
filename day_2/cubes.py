@@ -9,16 +9,32 @@ cubes = {"red": 12, "green": 13, "blue": 14}
 def get_game_info(gameString):
     gameID = re.findall(r"^Game\s\d+", gameString)[0].split(" ")[1]
     redCubes = [sub.replace(" red", "") for sub in re.findall(r"\d+\sred", gameString)]
+    redCubes = [int(i) for i in redCubes]
     greenCubes = [
         sub.replace(" green", "") for sub in re.findall(r"\d+\sgreen", gameString)
     ]
+    greenCubes = [int(i) for i in greenCubes]
     blueCubes = [
         sub.replace(" blue", "") for sub in re.findall(r"\d+\sblue", gameString)
     ]
-    return gameID, redCubes, greenCubes, blueCubes
+    blueCubes = [int(i) for i in blueCubes]
+    return {
+        "gameID": gameID,
+        "redCubes": redCubes,
+        "greenCubes": greenCubes,
+        "blueCubes": blueCubes,
+    }
 
 
-print(get_game_info(test_string))
+def check_if_valid_game(gameDict):
+    if (
+        sum(gameDict["redCubes"]) <= cubes["red"]
+        and sum(gameDict["blueCubes"]) <= cubes["blue"]
+        and sum(gameDict["greenCubes"]) <= cubes["green"]
+    ):
+        possible_games += gameDict["gameID"]
 
-# for line in fileinput.input():
-#     print(line)
+
+possible_games = 0
+for line in fileinput.input():
+    print(check_if_valid_game((get_game_info(line))))
